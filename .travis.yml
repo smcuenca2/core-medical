@@ -8,7 +8,7 @@ before_install:
   - docker version
   - docker-compose version
 install:
-  - docker-compose -f docker-compose.yml
+  - docker-compose -f docker-compose.yml build
 
 script:
   - docker-compose up
