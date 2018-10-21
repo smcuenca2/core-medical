@@ -5,11 +5,10 @@ python:
 services: mysql
 
 before_install:
-  - export DJANGO_SETTINGS_MODULE=app.settings
-  - export PYTHONPATH=$HOME/builds/smcuenca2/core-medical
-  - export PIP_USE_MIRRORS=true
+  - docker version
+  - docker-compose version
 install:
-  - pip install -r requirements.txt
+  - docker-compose -f docker-compose.yml
 
 script:
-  - python manage.py runserver
+  - docker-compose up
