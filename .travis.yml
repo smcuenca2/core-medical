@@ -4,11 +4,11 @@ python:
  - "3.6"
 services: mysql
 
-before_install:
-  - docker version
-  - docker-compose version
 install:
-  - docker-compose -f docker-compose.yml build
+  - pip install -r requirements.txt
+
+before_script:
+  - mysql -c "CREATE DATABASE umls;" -U root
 
 script:
-  - docker-compose up
+  - python manage.py runserver
