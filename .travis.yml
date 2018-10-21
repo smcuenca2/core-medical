@@ -2,7 +2,14 @@ language: python
 
 python:
  - "3.6"
+services: mysql
 
-install: pip install -e .
+before_install:
+  - export DJANGO_SETTINGS_MODULE=app.settings
+  - export PYTHONPATH=$HOME/builds/smcuenca2/core-medical
+  - export PIP_USE_MIRRORS=true
+install:
+  - pip install -r requirements.txt
 
-script: pytest
+script:
+  - python manage.py runserver
