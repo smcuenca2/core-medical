@@ -78,8 +78,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'umls',
-        'USER': 'umls_user',
-        'PASSWORD': 'umls_123',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': 'db',
         'PORT': '3306',
     }
