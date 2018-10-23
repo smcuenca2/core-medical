@@ -8,7 +8,8 @@ install:
   - pip install -r requirements.txt
 
 before_script:
-  - mysql -e "CREATE DATABASE umls;" -U root
+  - docker-compose pull
+  - docker-compose build
 
 script:
-  - python manage.py runserver
+  - docker-compose up -d
