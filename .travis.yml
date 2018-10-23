@@ -2,7 +2,14 @@ language: python
 
 python:
  - "3.6"
+services: mysql
 
-install: pip install -e .
+install:
+  - pip install -r requirements.txt
 
-script: pytest
+before_script:
+  - docker-compose pull
+  - docker-compose build
+
+script:
+  - docker-compose up -d

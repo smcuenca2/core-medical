@@ -2,15 +2,17 @@ version: '3.1'
 
 services:
   db:
-    image: postgres:9.6.1
+    image: mysql
     environment:
-      POSTGRES_USER: jorge.malla
-      POSTGRES_PASSWORD: xxxx
-      POSTGRES_DB: core-medical
+      MYSQL_DATABASE: umls
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver localhost:8000
     volumes:
       - .:/core-medical
     ports:
