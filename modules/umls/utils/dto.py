@@ -4,6 +4,7 @@ class SicknessTreatDTO():
     terminology = None
     original_terminologies = None
     term_rel = None
+    code_rel = None
 
     def __repr__(self):
         return str(self.__dict__)
