@@ -1,12 +1,10 @@
 import csv
 
-from django.shortcuts import render
-from pymedtermino import *
-from pymedtermino.umls import *
 from django.conf import settings
+from modules.umls.utils.dto import SicknessTreatDTO
+from pymedtermino.umls import *
 
 
-# Create your views here.
 def process_codes_from_file(file=None):
     DATABASE_CONFIG = getattr(settings, "DATABASES", None)
     DATABASE_HOST = DATABASE_CONFIG['default']['HOST']
@@ -23,9 +21,15 @@ def process_codes_from_file(file=None):
         csv_reader = csv.DictReader(csv_file, delimiter=';')
 
         for row in csv_reader:
-            code = row['CUI']
-
-            list_umls_cui.append(UMLS_CUI[code])
+            umls_cui = UMLS_CUI(row['CUI'])
+            list_umls_cui.append(umls_cui)
 
     for umls_cui in list_umls_cui:
-        print (umls_cui.code)
+        if 'may_be_treated_by' in umls_cui.relations:
+            for relations in umls_cui.may_be_treated_by:
+                sicknessTreatDTO = SicknessTreatDTO()
+                sicknessTreatDTO.code = umls_cui.code
+                sicknessTreatDTO.term = umls_cui.term
+                sicknessTreatDTO.original_terminologies = umls_cui.original_terminologies
+                sicknessTreatDTO.term_rel = relations.term
+                sicknessTreatDTO.terminology = umls_cui.terminology.name
