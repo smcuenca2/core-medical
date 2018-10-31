@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <script>
+    $( document ).ready(function() {
+       var form = document.getElementById("form");
+
+document.getElementById("button-process").addEventListener("click", function () {
+  form.submit();
+});
+    });
+
+    </script>
+    <form id="form" method="post" action="process">
+        {% csrf_token %}
+        <table class="table">
+            <thead>
+            <th>Código</th>
+            <th>Término</th>
+            <th>Términologia</th>
+            <th>Código de Relación</th>
+            <th>Relación</th>
+            </thead>
+            {% for umls in object_list %}
+                <tr>
+                    <td>{{ umls.code }}</td>
+                    <td>{{ umls.term }}</td>
+                    <td>{{ umls.terminology }}</td>
+                    <td>{{ umls.code_rel }}</td>
+                    <td>{{ umls.term_rel }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <a id="button-process" type="submit" class="btn btn-info btn-lg">Procesar</a>
+    </form>
+{% endblock %}
+
