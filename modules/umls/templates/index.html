@@ -31,19 +31,23 @@
     </div>
     <table class="table">
         <thead>
+        <th>Nro.</th>
         <th>Código</th>
         <th>Término</th>
         <th>Términologia</th>
         <th>Código de Relación</th>
+        <th>Término de Relación</th>
         <th>Relación</th>
         </thead>
         {% for umls in object_list %}
         <tr>
+            <td>{{ forloop.counter0|add:object_list.start_index }}</td>
             <td>{{ umls.code|upper }}</td>
             <td>{{ umls.term|title }}</td>
             <td>{{ umls.terminology|upper }}</td>
-            <td>{{ umls.code_rel|upper }}</td>
-            <td>{{ umls.term_rel|title }}</td>
+            <td>{{ umls.relation.code|upper }}</td>
+            <td>{{ umls.relation.term|title }}</td>
+            <td>{{ relation_selected|title }}</td>
         </tr>
         {% endfor %}
     </table>
