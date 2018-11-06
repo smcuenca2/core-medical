@@ -14,7 +14,8 @@
 <form id="form" method="get" action="process">
     {% csrf_token %}
     <div class="form-group row">
-        <select id="relation-selected" name="relation-selected" class="form-control">
+        <label class="col-form-label col-sm-2">Seleccionar una Relación:</label>
+        <select id="relation-selected" name="relation-selected" class="form-control col-sm-10">
             {% for rel in option_relations %}
             <option value="{{rel}}">
                 {{rel}}
@@ -38,11 +39,11 @@
         </thead>
         {% for umls in object_list %}
         <tr>
-            <td>{{ umls.code }}</td>
-            <td>{{ umls.term }}</td>
-            <td>{{ umls.terminology }}</td>
-            <td>{{ umls.code_rel }}</td>
-            <td>{{ umls.term_rel }}</td>
+            <td>{{ umls.code|upper }}</td>
+            <td>{{ umls.term|title }}</td>
+            <td>{{ umls.terminology|upper }}</td>
+            <td>{{ umls.code_rel|upper }}</td>
+            <td>{{ umls.term_rel|title }}</td>
         </tr>
         {% endfor %}
     </table>

@@ -42,7 +42,6 @@ def process_umls(request):
 
     for umls_cui in list_umls_cui:
         if relation_selected in umls_cui.relations:
-            print (umls_cui.relations)
             for relations in getattr(umls_cui, relation_selected):
                 sicknessTreatDTO = SicknessTreatDTO()
                 sicknessTreatDTO.code = umls_cui.code
