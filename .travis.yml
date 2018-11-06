@@ -15,5 +15,6 @@ before_script:
 script:
   - docker-compose up -d
   - coverage erase
+  - coverage report
 after_success:
   - codecov
