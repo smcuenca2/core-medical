@@ -6,6 +6,7 @@ services: docker
 
 install:
   - pip install -r requirements.txt
+  - pip install codecov
 
 before_script:
   - docker-compose pull
@@ -13,3 +14,6 @@ before_script:
 
 script:
   - docker-compose up -d
+  - coverage erase
+after_success:
+  - codecov
