@@ -12,7 +12,7 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 172.19.0.3:8000
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/core-medical
     ports:

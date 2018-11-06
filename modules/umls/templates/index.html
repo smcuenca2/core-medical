@@ -1,38 +1,78 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <script>
-    $( document ).ready(function() {
-       var form = document.getElementById("form");
+<script>
+    $(document).ready(function () {
+        var form = document.getElementById("form");
 
-document.getElementById("button-process").addEventListener("click", function () {
-  form.submit();
-});
+        document.getElementById("button-process").addEventListener("click", function () {
+            form.submit();
+        });
     });
 
-    </script>
-    <form id="form" method="post" action="process">
-        {% csrf_token %}
-        <table class="table">
-            <thead>
-            <th>Código</th>
-            <th>Término</th>
-            <th>Términologia</th>
-            <th>Código de Relación</th>
-            <th>Relación</th>
-            </thead>
-            {% for umls in object_list %}
-                <tr>
-                    <td>{{ umls.code }}</td>
-                    <td>{{ umls.term }}</td>
-                    <td>{{ umls.terminology }}</td>
-                    <td>{{ umls.code_rel }}</td>
-                    <td>{{ umls.term_rel }}</td>
-                </tr>
+</script>
+<form id="form" method="get" action="process">
+    {% csrf_token %}
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2">Seleccionar una Relación:</label>
+        <select id="relation-selected" name="relation-selected" class="form-control col-sm-10">
+            {% for rel in option_relations %}
+            <option value="{{rel}}">
+                {{rel}}
+            </option>
             {% endfor %}
-        </table>
+        </select>
+    </div>
+    <div class="form-group row">
+        <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
+               placeholder="Buscar" value="{{search}}"
+               required autofocus>
+        <a id="button-process" type="submit" class="btn btn-info btn-lg col-sm-2">Procesar</a>
+    </div>
+    <table class="table">
+        <thead>
+        <th>Nro.</th>
+        <th>Código</th>
+        <th>Término</th>
+        <th>Términologia</th>
+        <th>Código de Relación</th>
+        <th>Término de Relación</th>
+        <th>Relación</th>
+        </thead>
+        {% for umls in object_list %}
+        <tr>
+            <td>{{ forloop.counter0|add:object_list.start_index }}</td>
+            <td>{{ umls.code|upper }}</td>
+            <td>{{ umls.term|title }}</td>
+            <td>{{ umls.terminology|upper }}</td>
+            <td>{{ umls.relation.code|upper }}</td>
+            <td>{{ umls.relation.term|title }}</td>
+            <td>{{ relation_selected|title }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a class="page-item"
+               href="?page=1&search={{search}}&relation-selected={{relation_selected}}">&laquo; first</a>
+            <a class="page-item"
+               href="?page={{ object_list.previous_page_number }}&search={{search}}&relation-selected={{relation_selected}}">previous</a>
+        {% endif %}
 
-        <a id="button-process" type="submit" class="btn btn-info btn-lg">Procesar</a>
-    </form>
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a class="page-item"
+               href="?page={{ object_list.next_page_number }}&search={{search}}&relation-selected={{relation_selected}}">next</a>
+            <a class="page-item"
+               href="?page={{ object_list.paginator.num_pages }}&search={{search}}&relation-selected={{relation_selected}}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+
+</form>
 {% endblock %}
 
