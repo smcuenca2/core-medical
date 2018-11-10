@@ -34,20 +34,20 @@
         <th>Nro.</th>
         <th>Código</th>
         <th>Término</th>
-        <th>Términologia</th>
+        <th>Relación</th>
         <th>Código de Relación</th>
         <th>Término de Relación</th>
-        <th>Relación</th>
+        <th>Términologia</th>
         </thead>
         {% for umls in object_list %}
         <tr>
             <td>{{ forloop.counter0|add:object_list.start_index }}</td>
             <td>{{ umls.code|upper }}</td>
             <td>{{ umls.term|title }}</td>
-            <td>{{ umls.terminology|upper }}</td>
+            <td>{{ relation_selected|title }}</td>
             <td>{{ umls.relation.code|upper }}</td>
             <td>{{ umls.relation.term|title }}</td>
-            <td>{{ relation_selected|title }}</td>
+              <td>{{ umls.terminology|upper }}</td>
         </tr>
         {% endfor %}
     </table>
@@ -75,4 +75,3 @@
 
 </form>
 {% endblock %}
-

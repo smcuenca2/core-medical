@@ -3,11 +3,12 @@ version: '3.1'
 services:
   db:
     image: mysql
+    container_name: core-medical-db
     environment:
       MYSQL_DATABASE: umls
       MYSQL_USER: root
       MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD: "root"
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
   web:
@@ -17,5 +18,6 @@ services:
       - .:/core-medical
     ports:
       - "8000:8000"
+    container_name: core-medical-web
     depends_on:
       - db
