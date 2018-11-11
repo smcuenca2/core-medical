@@ -75,4 +75,4 @@ def connect_to_umls():
 
 def set_relations():
     return ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
-            'has_contraindicated_drug', 'may_be_diagnosed_by']
+            'has_contraindicated_drug', 'may_be_diagnosed_by', 'may_treat']
