@@ -1,0 +1,116 @@
+from django.db import models
+from django.contrib.auth.models import User
+import datetime
+
+
+class Audit(models.Model):
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class GroupATC(Audit):
+    TYPE_CHOICES = (
+        ('ALFA', 'ALFA'),
+        ('NUMERIC', 'NUMERICO'),
+    )
+    code = models.CharField(max_length=25)
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    level = models.PositiveIntegerField(default=1)
+    active = models.BooleanField(default=True)
+    parent = models.ForeignKey('self', null=True, blank=True,
+                               on_delete=models.CASCADE)
+    type = models.CharField(
+        max_length=2,
+        choices=TYPE_CHOICES,
+        default='ALFA',
+    )
+
+
+class Measure(Audit):
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    active = models.BooleanField(default=True)
+
+
+class Concentration(Audit):
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    amount = models.DecimalField(max_digits=5, decimal_places=2)
+    active = models.BooleanField(default=True)
+    measure = models.ForeignKey(Measure, related_name='concentrations',
+                                on_delete=models.CASCADE)
+
+
+class Physic(Audit):
+    code = models.CharField(max_length=25)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    pharmaceuticalform = models.CharField(max_length=250)
+    active = models.BooleanField(default=True)
+    concentration = models.ForeignKey('cnmb.Concentration',
+                                      related_name='physics',
+                                      on_delete=models.CASCADE)
+
+
+class PhysicLevel(Audit):
+    level = models.CharField(max_length=25)
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    active = models.BooleanField(default=True)
+
+
+class PrescriptionLevel(PhysicLevel):
+    physic = models.ForeignKey('cnmb.Physic',
+                               related_name='prescriptions',
+                               on_delete=models.CASCADE)
+
+    def __repr__(self):
+        self.level
+
+
+class CareLevel(PhysicLevel):
+    physic = models.ForeignKey('cnmb.Physic',
+                               related_name='cares',
+                               on_delete=models.CASCADE)
+
+    def __repr__(self):
+        self.level
+
+
+class Use(Audit):
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    active = models.BooleanField(default=True)
+
+
+class RouteAdministration(Use):
+    physic = models.ForeignKey('cnmb.Physic',
+                               related_name='routes_administration',
+                               on_delete=models.CASCADE)
+
+    def __repr__(self):
+        self.name
+
+
+class Range(Audit):
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    active = models.BooleanField(default=True)
+    start = models.PositiveIntegerField(default=0)
+    end = models.PositiveIntegerField(default=1)
+
+
+class Dosification(Audit):
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    active = models.BooleanField(default=True)
+    range = models.ForeignKey('cnmb.Range',
+                              related_name='dosifications',
+                              on_delete=models.CASCADE)
+    route = models.ForeignKey('cnmb.RouteAdministration',
+                              related_name='dosifications',
+                              on_delete=models.CASCADE)

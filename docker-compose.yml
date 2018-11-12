@@ -1,14 +1,27 @@
 version: '3.1'
 
 services:
+
   db:
     image: mysql
     container_name: core-medical-db
+    restart: 'always'
     environment:
       MYSQL_DATABASE: umls
       MYSQL_USER: root
       MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+  db_cnmb:
+    image: mysql
+    container_name: core-medical-db-cnmb
+    restart: 'always'
+    environment:
+      MYSQL_DATABASE: cnmb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
 
   web:
@@ -21,3 +34,4 @@ services:
     container_name: core-medical-web
     depends_on:
       - db
+      - db_cnmb
