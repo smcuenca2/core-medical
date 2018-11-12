@@ -85,7 +85,7 @@ DATABASES = {
     },
     'cnmb': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'umls',
+        'NAME': 'cnmb',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'db_cnmb',
