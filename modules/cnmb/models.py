@@ -5,9 +5,11 @@ import datetime
 
 class Audit(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
-    update_at = models.DateTimeField(auto_now_add=False)
-    user = models.ForeignKey(User, related_name='audits',
-                             on_delete=models.CASCADE)
+    update_at = models.DateTimeField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
 
 
 class GroupATC(Audit):
@@ -40,7 +42,7 @@ class Concentration(Audit):
     description = models.TextField(blank=True, null=True, max_length=500)
     amount = models.DecimalField(max_digits=5, decimal_places=2)
     active = models.BooleanField(default=True)
-    measure = models.ForeignKey('cnmb.Measure', related_name='concentrations',
+    measure = models.ForeignKey(Measure, related_name='concentrations',
                                 on_delete=models.CASCADE)
 
 

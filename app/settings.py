@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'modules.umls'
+    'modules.umls',
+    'modules.cnmb',
+
 ]
 
 MIDDLEWARE = [
@@ -79,6 +81,14 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'db',
+        'PORT': '3306',
+    },
+    'cnmb': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'umls',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'db_cnmb',
         'PORT': '3306',
     }
 }
