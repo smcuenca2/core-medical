@@ -55,6 +55,9 @@ class Physic(Audit):
     concentration = models.ForeignKey('cnmb.Concentration',
                                       related_name='physics',
                                       on_delete=models.CASCADE)
+    group = models.ForeignKey('cnmb.GroupATC',
+                              related_name='physics',
+                              on_delete=models.CASCADE)
 
 
 class PhysicLevel(Audit):
@@ -74,9 +77,8 @@ class PrescriptionLevel(PhysicLevel):
 
 
 class CareLevel(PhysicLevel):
-    physic = models.ForeignKey('cnmb.Physic',
-                               related_name='cares',
-                               on_delete=models.CASCADE)
+    physics = models.ManyToManyField('cnmb.Physic',
+                                     related_name='cares')
 
     def __repr__(self):
         self.level
