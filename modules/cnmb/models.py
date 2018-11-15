@@ -1,12 +1,11 @@
-from django.db import models
 from django.contrib.auth.models import User
-import datetime
+from django.db import models
 
 
 class Audit(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -17,7 +16,7 @@ class GroupATC(Audit):
         ('ALFA', 'ALFA'),
         ('NUMERIC', 'NUMERICO'),
     )
-    code = models.CharField(max_length=25)
+    code = models.CharField(max_length=25, unique=True)
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True, max_length=500)
     level = models.PositiveIntegerField(default=1)
@@ -32,6 +31,7 @@ class GroupATC(Audit):
 
 
 class Measure(Audit):
+    code = models.CharField(max_length=25, unique=True)
     name = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True, max_length=500)
     active = models.BooleanField(default=True)
@@ -47,13 +47,17 @@ class Concentration(Audit):
 
 
 class Physic(Audit):
-    code = models.CharField(max_length=25)
+    code = models.CharField(max_length=25, unique=True)
+    name = models.CharField(max_length=250)
     description = models.TextField(blank=True, null=True, max_length=500)
     pharmaceuticalform = models.CharField(max_length=250)
     active = models.BooleanField(default=True)
     concentration = models.ForeignKey('cnmb.Concentration',
                                       related_name='physics',
                                       on_delete=models.CASCADE)
+    group = models.ForeignKey('cnmb.GroupATC',
+                              related_name='physics',
+                              on_delete=models.CASCADE)
 
 
 class PhysicLevel(Audit):
@@ -73,9 +77,8 @@ class PrescriptionLevel(PhysicLevel):
 
 
 class CareLevel(PhysicLevel):
-    physic = models.ForeignKey('cnmb.Physic',
-                               related_name='cares',
-                               on_delete=models.CASCADE)
+    physics = models.ManyToManyField('cnmb.Physic',
+                                     related_name='cares')
 
     def __repr__(self):
         self.level
