@@ -24,7 +24,7 @@ class GroupATC(Audit):
     parent = models.ForeignKey('self', null=True, blank=True,
                                on_delete=models.CASCADE)
     type = models.CharField(
-        max_length=2,
+        max_length=25,
         choices=TYPE_CHOICES,
         default='ALFA',
     )
@@ -42,7 +42,8 @@ class Concentration(Audit):
     description = models.TextField(blank=True, null=True, max_length=500)
     amount = models.DecimalField(max_digits=5, decimal_places=2)
     active = models.BooleanField(default=True)
-    measure = models.ForeignKey(Measure, related_name='concentrations',
+    measure = models.ForeignKey(Measure, null=True,
+                                related_name='concentrations',
                                 on_delete=models.CASCADE)
 
 
@@ -52,7 +53,7 @@ class Physic(Audit):
     description = models.TextField(blank=True, null=True, max_length=500)
     pharmaceuticalform = models.CharField(max_length=250)
     active = models.BooleanField(default=True)
-    concentration = models.ForeignKey('cnmb.Concentration',
+    concentration = models.ForeignKey('cnmb.Concentration', null=True,
                                       related_name='physics',
                                       on_delete=models.CASCADE)
     group = models.ForeignKey('cnmb.GroupATC',
@@ -79,9 +80,6 @@ class PrescriptionLevel(PhysicLevel):
 class CareLevel(PhysicLevel):
     physics = models.ManyToManyField('cnmb.Physic',
                                      related_name='cares')
-
-    def __repr__(self):
-        self.level
 
 
 class Use(Audit):
