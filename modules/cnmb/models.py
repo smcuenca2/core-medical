@@ -47,6 +47,19 @@ class Concentration(Audit):
                                 on_delete=models.CASCADE)
 
 
+class PhysicLevel(Audit):
+    level = models.CharField(max_length=25)
+    name = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True, max_length=500)
+    active = models.BooleanField(default=True)
+
+
+class PrescriptionLevel(PhysicLevel):
+
+    def __repr__(self):
+        self.name
+
+
 class Physic(Audit):
     code = models.CharField(max_length=25, unique=True)
     name = models.CharField(max_length=250)
@@ -60,21 +73,9 @@ class Physic(Audit):
                               related_name='physics',
                               on_delete=models.CASCADE)
 
-
-class PhysicLevel(Audit):
-    level = models.CharField(max_length=25)
-    name = models.CharField(max_length=250)
-    description = models.TextField(blank=True, null=True, max_length=500)
-    active = models.BooleanField(default=True)
-
-
-class PrescriptionLevel(PhysicLevel):
-    physic = models.ForeignKey('cnmb.Physic',
-                               related_name='prescriptions',
-                               on_delete=models.CASCADE)
-
-    def __repr__(self):
-        self.level
+    prescription_level = models.ForeignKey('cnmb.PrescriptionLevel',
+                                           related_name='physics',
+                                           on_delete=models.CASCADE)
 
 
 class CareLevel(PhysicLevel):

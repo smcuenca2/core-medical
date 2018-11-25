@@ -19,4 +19,5 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('umls/', include('modules.umls.urls')),
+    path('cnmb/', include('modules.cnmb.urls')),
 ]
