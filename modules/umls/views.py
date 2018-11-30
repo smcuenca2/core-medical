@@ -2,33 +2,26 @@ import csv
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.shortcuts import render
 from modules.umls.utils.dto import Relation, ConceptDTO
 from pymedtermino.umls import *
 
 
-def index(request):
-    object_list = []
-    option_relations = set_relations()
-    return render(request, 'index.html', locals())
-
-
-def process_umls(request):
+def process(request):
     """
     Este método permite presentar la relación entre enferemedades y tratamientos
     mediante el uso de un filtro cuyos códigos se encuentran en un archivo csv.
     :param request:
     :return:
     """
+
     search = request.GET.get('search')
-    option_relations = set_relations()
+    option_relations = get_relations()
     relation_selected = request.GET.get('relation-selected')
     PAGINATOR_NUMBER_ITEMS = getattr(settings, "PAGINATOR_NUMBER_ITEMS",
                                      None)
     connect_to_umls()
     list_umls_cui = []
     concepts = []
-
     if search is not None and search != "":
         umls_cui = UMLS_CUI(search)
         list_umls_cui.append(umls_cui)
@@ -56,7 +49,9 @@ def process_umls(request):
     paginator = Paginator(concepts, PAGINATOR_NUMBER_ITEMS)
     page = request.GET.get('page')
     object_list = paginator.get_page(page)
-    return render(request, 'index.html', locals())
+
+    return {'object_list': object_list, 'relation_selected': relation_selected,
+            'option_relations': option_relations, 'search': search}
 
 
 def connect_to_umls():
@@ -73,6 +68,6 @@ def connect_to_umls():
                        DATABASE_NAME, encoding="latin1")
 
 
-def set_relations():
+def get_relations():
     return ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
             'has_contraindicated_drug', 'may_be_diagnosed_by', 'may_treat']
