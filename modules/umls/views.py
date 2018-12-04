@@ -41,7 +41,7 @@ def process(request):
                     concept.relation = Relation()
                     concept.code = umls_cui.code
                     concept.term = umls_cui.term
-                    concept.original_terminologies = umls_cui.original_terminologies
+                    concept.original_terminologies = ' '.join(list(umls_cui.original_terminologies))
                     concept.relation.term = relations.term
                     concept.terminology = umls_cui.terminology.name
                     concept.relation.code = relations.code
