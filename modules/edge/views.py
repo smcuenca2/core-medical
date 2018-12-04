@@ -4,6 +4,8 @@ from modules.umls import views as views_umls
 
 def index(request):
     options_database = get_databases()
+    database_selected="UMLS"
+    option_relations = views_umls.get_relations()
     return render(request, 'base.html', locals())
 
 def process(request):

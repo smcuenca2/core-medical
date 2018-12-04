@@ -7,7 +7,9 @@ from builtins import Exception
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.template import loader
 from modules.cnmb.models import Physic, Concentration, \
     PrescriptionLevel, RouteAdministration, GroupATC, CareLevel
 from modules.cnmb.utils.dto import CnmbDto

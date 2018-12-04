@@ -1,16 +1,14 @@
-{% extends "base.html" %}
-{% block content %}
+
 <script>
     $(document).ready(function () {
-        var form = document.getElementById("form");
-
+        var form = document.getElementById("form-cnmb");
         document.getElementById("button-process").addEventListener("click", function () {
             form.submit();
         });
     });
 
 </script>
-<form id="form" method="get" action="process">
+<form id="form-cnmb" method="get" action="/core-medical/cnmb/process">
     {% csrf_token %}
     <div class="form-group row">
         <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
@@ -96,4 +94,3 @@
     </span>
     </div>
 </form>
-{% endblock %}

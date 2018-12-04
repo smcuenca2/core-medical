@@ -22,29 +22,30 @@ def process(request):
     connect_to_umls()
     list_umls_cui = []
     concepts = []
+
+    codes_list=read_codes()
+
     if search is not None and search != "":
         umls_cui = UMLS_CUI(search)
         list_umls_cui.append(umls_cui)
     else:
-        with open('codes_umls.csv', mode='r') as csv_file:
-            csv_reader = csv.DictReader(csv_file, delimiter=';')
-
-            for row in csv_reader:
-                umls_cui = UMLS_CUI(row['CUI'])
-                list_umls_cui.append(umls_cui)
+        for code_umls in codes_list:
+            umls_cui = UMLS_CUI(code_umls)
+            list_umls_cui.append(umls_cui)
 
     for umls_cui in list_umls_cui:
         if relation_selected in umls_cui.relations:
             for relations in getattr(umls_cui, relation_selected):
-                concept = ConceptDTO()
-                concept.relation = Relation()
-                concept.code = umls_cui.code
-                concept.term = umls_cui.term
-                concept.original_terminologies = umls_cui.original_terminologies
-                concept.relation.term = relations.term
-                concept.terminology = umls_cui.terminology.name
-                concept.relation.code = relations.code
-                concepts.append(concept)
+                if relations.code.upper() in codes_list:
+                    concept = ConceptDTO()
+                    concept.relation = Relation()
+                    concept.code = umls_cui.code
+                    concept.term = umls_cui.term
+                    concept.original_terminologies = umls_cui.original_terminologies
+                    concept.relation.term = relations.term
+                    concept.terminology = umls_cui.terminology.name
+                    concept.relation.code = relations.code
+                    concepts.append(concept)
 
     paginator = Paginator(concepts, PAGINATOR_NUMBER_ITEMS)
     page = request.GET.get('page')
@@ -71,3 +72,18 @@ def connect_to_umls():
 def get_relations():
     return ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
             'has_contraindicated_drug', 'may_be_diagnosed_by', 'may_treat']
+
+
+def read_codes():
+    """
+    Este método permite almacenar los codigos umls que estań en el archivo csv
+    :return:
+    """
+    codes_list = []
+
+    with open('codes_umls.csv', mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file, delimiter=';')
+
+        for row in csv_reader:
+            codes_list.append(row['CUI'].upper())
+    return codes_list
