@@ -227,11 +227,6 @@ def import_data():
                 logging.error('row was not saved', e)
 
 
-def index(request):
-    object_list = []
-    return render(request, 'index_cnmb.html', locals())
-
-
 def process(request):
     object_list = []
 
@@ -262,4 +257,4 @@ def process(request):
     paginator = Paginator(cnmb_list, PAGINATOR_NUMBER_ITEMS)
     page = request.GET.get('page')
     object_list = paginator.get_page(page)
-    return render(request, 'index_cnmb.html', locals())
+    return {'object_list': object_list, 'search': search}

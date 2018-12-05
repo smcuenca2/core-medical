@@ -5,6 +5,7 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
     <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
+     <link href="{% static "css/base.css" %}" rel="stylesheet">
 
     {% block extrastyle %}{% endblock %}
     {% if LANGUAGE_BIDI %}
@@ -21,55 +22,29 @@
         <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
     <script src="{% static 'javascript/jquery-1.6.min.js' %}"></script>
 
-    <style>
-
-        body {
-            height: 100%;
-            padding-bottom: 30px;
-            font-family: "Helvetica Neue", Arial, sans-serif;
-        }
-
-        /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
-        .row.content {
-            height: 768px
-        }
-
-        /* Set gray background color and 100% height */
-        .sidenav {
-            padding-top: 20px;
-            background-color: #f1f1f1;
-            height: 100%;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30px;
-        }
-
-        }
-    </style>
 </head>
 
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
       data-admin-utc-offset="{% now "Z" %}">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Sistema de Tratamiento Clínico</a>
+  <a class="navbar-brand" href="#">Sistema Busqueda de Tratamientos Médicos</a>
 
 </nav>
 
 
-<div class="container-fluid text-center">
-  <div class="row content">
-    <div class="col-sm-2 sidenav">
+<div class="container-fluid">
+
+   <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+       <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
         {% block sidenav %}
             {% include "index.html" %}
          {% endblock %}
+            </li>
+       </ul>
     </div>
-      <div class="col-sm-10 text-left">
+      <div  class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
           {% block content %}
           {% if database_selected == "CNMB" %}
           {% include "index_cnmb.html" %}
@@ -78,7 +53,6 @@
           {% endif %}
           {% endblock %}
       </div>
-  </div>
 </div>
 
 </body>

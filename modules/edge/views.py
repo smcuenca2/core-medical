@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from modules.umls import views as views_umls
+from modules.cnmb import views as views_cnmb
 
 
 def index(request):
@@ -38,6 +39,13 @@ def process_umls(request):
     database_selected = "UMLS"
     return render(request, 'base.html', locals())
 
+def process_cnmb(request):
+    options_database = get_databases()
+    data = views_cnmb.process(request)
+    object_list = data['object_list']
+    search = data['search']
+    database_selected = "CNMB"
+    return render(request, 'base.html', locals())
 
 def get_databases():
     return ['UMLS', 'CNMB', ]
