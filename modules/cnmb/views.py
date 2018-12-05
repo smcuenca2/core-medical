@@ -231,6 +231,8 @@ def process(request):
     object_list = []
 
     search = request.GET.get('search')
+    selected_level = request.GET.get('selected-level')
+
     PAGINATOR_NUMBER_ITEMS = getattr(settings, "PAGINATOR_NUMBER_ITEMS",
                                      None)
     database = get_database()[1]
@@ -242,7 +244,13 @@ def process(request):
 
     if search is not None and search != "":
         physic_list = query_physics.filter(
-            Q(group__code=search) | Q(name__istartswith=search)).all()
+            Q(group__code=search) | Q(name__istartswith=search) | Q(
+                group__parent__code=search) | Q(
+                group__parent__parent__code=search) | Q(
+                group__parent__parent__parent__code=search) | Q(
+                group__parent__parent__parent__parent__code=search) | Q(
+                group__parent__parent__parent__parent__parent__code=search) | Q(
+                group__parent__parent__parent__parent__parent__code=search)).all()
     else:
         physic_list = query_physics.all()
 
