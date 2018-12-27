@@ -34,9 +34,9 @@ def process(request):
     else:
         for data_csv in data_csv_list:
             umls_cui = UMLS_CUI(data_csv.code)
-            umls=DataUmls()
-            umls.umls=umls_cui
-            umls.term=data_csv.name
+            umls = DataUmls()
+            umls.umls = umls_cui
+            umls.term = data_csv.name
             list_umls_cui.append(umls)
 
     codes_list = [data.code for data in data_csv_list]
@@ -53,7 +53,7 @@ def process(request):
                         list(umls_cui.umls.original_terminologies))
                     concept.relation.term = relations.term
                     concept.terminology = umls_cui.umls.terminology.name
-                    concept.term_umls=umls_cui.term
+                    concept.term_umls = umls_cui.term
                     concept.relation.code = relations.code
                     concepts.append(concept)
 
@@ -83,14 +83,17 @@ def get_relations():
     return ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
             'may_treat', 'may_prevent', 'may_diagnose']
 
+
 def search_term_umls(code):
-    result=''
+    result = ''
     with open('codes_umls.csv', mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=';')
         for row in csv_reader:
-            if code.upper()==row['CUI'].upper():
-                result=row['NAME']
+            if code.upper() == row['CUI'].upper():
+                result = row['NAME']
     return result
+
+
 def read_codes():
     """
     Este método permite almacenar los codigos umls que estań en el archivo csv

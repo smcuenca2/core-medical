@@ -1,4 +1,4 @@
 from django import forms
 
-class FileUploadForm(forms.Form):
+class FileUploadUmlsForm(forms.Form):
     file = forms.FileField()

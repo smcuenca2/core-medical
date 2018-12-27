@@ -1,60 +1,144 @@
 {% load i18n static %}<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<html lang="{{ LANGUAGE_CODE|default:" en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}">
-    <link href="{% static "bootstrap/css/bootstrap.css" %}" rel="stylesheet">
-     <link href="{% static "css/base.css" %}" rel="stylesheet">
-
-    {% block extrastyle %}{% endblock %}
-    {% if LANGUAGE_BIDI %}
-        <link rel="stylesheet" type="text/css"
-              href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}">{% endif %}
-    {% block extrahead %}{% endblock %}
-    {% block responsive %}
-        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive.css" %}">
-        {% if LANGUAGE_BIDI %}
-            <link rel="stylesheet" type="text/css" href="{% static "admin/css/responsive_rtl.css" %}">{% endif %}
+    {% block extrastyle %}
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
     {% endblock %}
-    {% block blockbots %}
-        <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+
+    {% block extrahead %}
     <script src="{% static 'javascript/jquery-1.6.min.js' %}"></script>
+    <script src="{% static 'bootstrap/css/bootstrap.bundle.js' %}"></script>
+    {% endblock %}
+
+    {% block responsive %}
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    {% endblock %}
+
+    {% block blockbots %}
+    <meta name="robots" content="NONE,NOARCHIVE">
+    {% endblock %}
 
 </head>
 
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
-      data-admin-utc-offset="{% now "Z" %}">
+<body id="page-top">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Sistema Busqueda de Tratamientos Médicos</a>
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+<!--<a class="navbar-brand" href="#">Sistema Busqueda de Tratamientos Médicos</a>-->
 
-</nav>
+<!--</nav>-->
+<nav class="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
+    <div class="container">
+        <img src="/static/img/utpl.png" height="100px" width="100px">
 
-
-<div class="container-fluid">
-
-   <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
-       <ul class="nav nav-pills flex-column">
-            <li class="nav-item">
-        {% block sidenav %}
-            {% include "index.html" %}
-         {% endblock %}
-            </li>
-       </ul>
+        <!--<button class="navbar-toggler navbar-toggler-right text-uppercase bg-primary text-white rounded" type="button"-->
+        <!--data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"-->
+        <!--aria-expanded="false" aria-label="Toggle navigation">-->
+        <!--Menu-->
+        <!--<i class="fas fa-bars"></i>-->
+        <!--</button>-->
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item mx-0 mx-lg-2">
+                    <div class="py-3 px-0 px-lg-2 ">
+                        <a class=" navbar-brand" href="#page-top">Sistema Buscador de Medicamentos</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="form-inline my-2 my-lg-0">
+                <img src="/static/img/healt.png" height="100px" width="100px">
+            </div>
+        </div>
     </div>
-      <div  class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
-          {% block content %}
-          {% if database_selected == "CNMB" %}
-          {% include "index_cnmb.html" %}
-          {% elif database_selected == "UMLS" %}
-          {% include "upload.html" %}
-          {% include "index_umls.html" %}
-          {% endif %}
-          {% endblock %}
-      </div>
-</div>
+</nav>
+<header class="masthead bg-primary text-white text-center">
 
+
+</header>
+
+<section class="portfolio " id="portfolio">
+    <div class="container">
+        <h2 class="text-center text-uppercase text-secondary mb-0">Buscador</h2>
+        <hr class="star-dark mb-5">
+        {% include "index.html" %}
+        {% block content %}
+        {% if database_selected == "CNMB" %}
+        {% include "index_cnmb.html" %}
+        {% elif database_selected == "UMLS" %}
+        {% include "upload_codes_umls.html" %}
+        {% include "index_umls.html" %}
+        {% endif %}
+        {% endblock %}
+
+    </div>
+</section>
+<!--&lt;!&ndash; About Section &ndash;&gt;-->
+<!--<section class="bg-primary text-white mb-0" id="about">-->
+<!--<div class="container">-->
+<!--<h2 class="text-center text-uppercase text-white">Acerca</h2>-->
+<!--<hr class="star-light mb-5">-->
+<!--<div class="row">-->
+<!--<div class="col-lg-4 ml-auto">-->
+<!--<p class="lead">-->
+<!--Software que permite la búsqueda de medicamentos en base de datos umls y del cuadro nacional de medicamentos de Ecuador-->
+<!--</p>-->
+<!--</div>-->
+<!--<div class="col-lg-4 mr-auto">-->
+<!--<p class="lead">Desarrollado por Silvana Cuenca</p>-->
+<!--</div>-->
+<!--</div>-->
+<!--</div>-->
+<!--</section>-->
+
+<footer class="footer text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-5 mb-lg-0">
+                <h4 class="text-uppercase mb-4">Localización</h4>
+                <p class="lead mb-0">Loja, Ecuador
+                    <br>UTPL</p>
+
+            </div>
+            <div class="col-md-4 mb-5 mb-lg-0">
+                <h4 class="text-uppercase mb-4">Redes Sociales</h4>
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item">
+                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
+                            <i class="fab fa-fw fa-facebook-f"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
+                            <i class="fab fa-fw fa-google-plus-g"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
+                            <i class="fab fa-fw fa-twitter"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
+                            <i class="fab fa-fw fa-linkedin-in"></i>
+                        </a>
+                    </li>
+                    <li class="list-inline-item">
+                        <a class="btn btn-outline-light btn-social text-center rounded-circle" href="#">
+                            <i class="fab fa-fw fa-dribbble"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h4 class="text-uppercase mb-4">Acerca del Software</h4>
+                <p class="lead mb-0">Software Libre, destinado a los profesionales de la medicina para la búsqueda de
+                    medicamentos.
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
