@@ -1,7 +1,7 @@
 <form method="get" action="process">
     {% csrf_token %}
     <div class="form-group">
-        <label>Seleccione una Basde de Datos</label>
+        <label>Seleccionar Termilogía</label>
         <select id="database-selected" name="database-selected" onchange="this.form.submit()">
             {% for rel in options_database %}
             <option value="{{rel}}" {% if rel == database_selected %} selected{% endif %}>{{rel}}</option>

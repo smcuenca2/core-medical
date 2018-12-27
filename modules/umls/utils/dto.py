@@ -3,6 +3,7 @@ class Concept():
     term = None
     terminology = None
     original_terminologies = None
+    term_umls = None
 
     def __repr__(self):
         return str(self.__dict__)
@@ -18,3 +19,13 @@ class ConceptDTO(Concept):
 
     def __repr__(self):
         return str(self.__dict__)
+
+
+class DataCsv():
+    code = None
+    name = None
+
+
+class DataUmls():
+    umls = None
+    term = None

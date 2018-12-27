@@ -1,6 +1,8 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from modules.umls import views as views_umls
 from modules.cnmb import views as views_cnmb
+from modules.umls import views as views_umls
+from modules.umls.forms import FileUploadForm
 
 
 def index(request):
@@ -38,7 +40,7 @@ def process_umls(request):
     object_list = data['object_list']
     relation_selected = data['relation_selected']
     option_relations = data['option_relations']
-    search = data['search']
+    search = data['search'] if data['search'] is not None else ''
     database_selected = "UMLS"
     return render(request, 'base.html', locals())
 
@@ -54,3 +56,20 @@ def process_cnmb(request):
 
 def get_databases():
     return ['UMLS', 'CNMB', ]
+
+
+def upload_csv_umls(request):
+    if request.method == 'POST':
+        form = FileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return HttpResponseRedirect('process_umls')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})
+
+
+def handle_uploaded_file(f):
+    with open('codes_umls.csv', 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)

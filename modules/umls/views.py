@@ -2,7 +2,7 @@ import csv
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from modules.umls.utils.dto import Relation, ConceptDTO
+from modules.umls.utils.dto import Relation, ConceptDTO, DataCsv, DataUmls
 from pymedtermino.umls import *
 
 
@@ -23,27 +23,37 @@ def process(request):
     list_umls_cui = []
     concepts = []
 
-    codes_list=read_codes()
+    data_csv_list = read_codes()
 
     if search is not None and search != "":
         umls_cui = UMLS_CUI(search)
-        list_umls_cui.append(umls_cui)
+        umls = DataUmls()
+        umls.umls = umls_cui
+        umls.term = search_term_umls(search)
+        list_umls_cui.append(umls)
     else:
-        for code_umls in codes_list:
-            umls_cui = UMLS_CUI(code_umls)
-            list_umls_cui.append(umls_cui)
+        for data_csv in data_csv_list:
+            umls_cui = UMLS_CUI(data_csv.code)
+            umls=DataUmls()
+            umls.umls=umls_cui
+            umls.term=data_csv.name
+            list_umls_cui.append(umls)
+
+    codes_list = [data.code for data in data_csv_list]
 
     for umls_cui in list_umls_cui:
-        if relation_selected in umls_cui.relations:
-            for relations in getattr(umls_cui, relation_selected):
+        if relation_selected in umls_cui.umls.relations:
+            for relations in getattr(umls_cui.umls, relation_selected):
                 if relations.code.upper() in codes_list:
                     concept = ConceptDTO()
                     concept.relation = Relation()
-                    concept.code = umls_cui.code
-                    concept.term = umls_cui.term
-                    concept.original_terminologies = ' '.join(list(umls_cui.original_terminologies))
+                    concept.code = umls_cui.umls.code
+                    concept.term = umls_cui.umls.term
+                    concept.original_terminologies = ' '.join(
+                        list(umls_cui.umls.original_terminologies))
                     concept.relation.term = relations.term
-                    concept.terminology = umls_cui.terminology.name
+                    concept.terminology = umls_cui.umls.terminology.name
+                    concept.term_umls=umls_cui.term
                     concept.relation.code = relations.code
                     concepts.append(concept)
 
@@ -70,20 +80,29 @@ def connect_to_umls():
 
 
 def get_relations():
-    return ['may_be_treated_by', 'may_be_prevented_by','may_be_diagnosed_by',
-             'may_treat','may_prevent','may_diagnose']
+    return ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
+            'may_treat', 'may_prevent', 'may_diagnose']
 
-
+def search_term_umls(code):
+    result=''
+    with open('codes_umls.csv', mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file, delimiter=';')
+        for row in csv_reader:
+            if code.upper()==row['CUI'].upper():
+                result=row['NAME']
+    return result
 def read_codes():
     """
     Este método permite almacenar los codigos umls que estań en el archivo csv
     :return:
     """
     codes_list = []
-
     with open('codes_umls.csv', mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=';')
 
         for row in csv_reader:
-            codes_list.append(row['CUI'].upper())
+            data = DataCsv()
+            data.code = row['CUI'].upper()
+            data.name = row['NAME']
+            codes_list.append(data)
     return codes_list

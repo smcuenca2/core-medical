@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^process$', views.process, name='process'),
     url(r'^process_umls$', views.process_umls, name='process_umls'),
     url(r'^process_cnmb$', views.process_cnmb, name='process_cnmb'),
+    url(r'^upload_csv_umls$', views.upload_csv_umls, name='upload_csv_umls'),
 ]

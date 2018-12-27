@@ -26,10 +26,6 @@
         <th>Nivel de Atención I</th>
         <th>Nivel de Atención II</th>
         <th>Nivel de Atención III</th>
-        <th>4N</th>
-        <th>Descripción 4N</th>
-        <th>3N</th>
-        <th>Descripción 3N</th>
         <th>2N</th>
         <th>Descripción 2N</th>
         <th>1N</th>
@@ -60,10 +56,7 @@
             {% else %}
             <td>{{ 'No'|title }}</td>
             {% endif %}
-            <td>{{ cnmb.physic.group.parent.code|upper }}</td>
-            <td>{{ cnmb.physic.group.parent.name|title }}</td>
-            <td>{{ cnmb.physic.group.parent.parent.code|upper }}</td>
-            <td>{{ cnmb.physic.group.parent.parent.name|title }}</td>
+
             <td>{{ cnmb.physic.group.parent.parent.parent.code|upper }}</td>
             <td>{{ cnmb.physic.group.parent.parent.parent.name|title }}</td>
             <td>{{ cnmb.physic.group.parent.parent.parent.parent.code|upper }}</td>
