@@ -1,8 +1,9 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from modules.cnmb import views as views_cnmb
 from modules.umls import views as views_umls
 from modules.umls.forms import FileUploadUmlsForm
+
+from modules.cnmb.forms import FileUploadCnmbForm
 
 
 def index(request):
@@ -51,6 +52,7 @@ def process_cnmb(request):
     data = views_cnmb.process(request)
     object_list = data['object_list']
     search = data['search']
+    search_by_csv = data['search_by_csv']
     database_selected = "CNMB"
     return render(request, 'base.html', locals())
 
@@ -60,17 +62,42 @@ def get_databases():
 
 
 def upload_csv_umls(request):
-
     if request.method == 'POST':
         form = FileUploadUmlsForm(request.POST, request.FILES)
+        error = None
         if form.is_valid():
-            handle_uploaded_file(request.FILES['file'])
+            file = request.FILES['file']
+            index = file.name.find('.')
+            format = file.name[index:]
+            if format == '.csv':
+                handle_uploaded_file(request.FILES['file'], 'codes_umls.csv')
+            else:
+                error = 'El formato del archivo que intenta subir es incorrecto.'
     else:
-        form = UploadFileForm()
+        form = FileUploadUmlsForm()
 
-    return HttpResponseRedirect('process_umls')
+    return render(request, 'upload_umls_successfull.html', locals())
 
-def handle_uploaded_file(f):
-    with open('codes_umls.csv', 'wb+') as destination:
+
+def upload_csv_cnmb(request):
+    if request.method == 'POST':
+        form = FileUploadCnmbForm(request.POST, request.FILES)
+        error = None
+        if form.is_valid():
+            file = request.FILES['file']
+            index = file.name.find('.')
+            format = file.name[index:]
+            if format == '.csv':
+                handle_uploaded_file(request.FILES['file'], 'codes_cnmb.csv')
+            else:
+                error = 'El formato del archivo que intenta subir es incorrecto.'
+    else:
+        form = FileUploadCnmbForm()
+
+    return render(request, 'upload_umls_successfull.html', locals())
+
+
+def handle_uploaded_file(f, file_name):
+    with open(file_name, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)

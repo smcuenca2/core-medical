@@ -4,16 +4,36 @@
         document.getElementById("button-process").addEventListener("click", function () {
             form.submit();
         });
+         var search_by_csv='{{search_by_csv}}';
+         console.log(search_by_csv,'mm');
+         if (search_by_csv!=undefined && search_by_csv=='SI') {
+             document.getElementById("search_by_csv").checked = true;
+         }
     });
 
+    function check() {
+        var x = document.getElementById("search_by_csv").checked;
+        if (x == true) {
+            document.getElementById("search_by_csv").value = 'SI';
+        } else {
+            document.getElementById("search_by_csv").value = 'NO';
+        }
+    }
 </script>
 <form id="form-cnmb" method="get" action="process_cnmb">
     {% csrf_token %}
     <div class="form-group row">
+
+        <label class="col-sm-8">Buscar por Archivo CSV:</label>
+        <input class="form-control col-sm-4" type="checkbox" onclick="check()" name="search_by_csv" id="search_by_csv"
+               value="{{search_by_csv}}">
+    </div>
+
+    <div class="form-group row">
         <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
                placeholder="Buscar" value="{{search}}"
                required autofocus>
-        <a id="button-process" type="submit" class="btn btn-info btn-lg col-sm-2">Procesar</a>
+        <a id="button-process" type="submit" class="btn btn-info btn-lg col-sm-2">Buscar</a>
     </div>
     <table class="table">
         <thead>
@@ -68,9 +88,9 @@
     <span class="step-links">
         {% if object_list.has_previous %}
             <a class="page-item"
-               href="?page=1&search={{search}}">&laquo; first</a>
+               href="?page=1&search={{search}}&&search_by_csv={{search_by_csv}}">&laquo; first</a>
             <a class="page-item"
-               href="?page={{ object_list.previous_page_number }}&search={{search}}">previous</a>
+               href="?page={{ object_list.previous_page_number }}&search={{search}}&&search_by_csv={{search_by_csv}}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -79,9 +99,9 @@
 
         {% if object_list.has_next %}
             <a class="page-item"
-               href="?page={{ object_list.next_page_number }}&search={{search}}">next</a>
+               href="?page={{ object_list.next_page_number }}&search={{search}}&&search_by_csv={{search_by_csv}}">next</a>
             <a class="page-item"
-               href="?page={{ object_list.paginator.num_pages }}&search={{search}}">last &raquo;</a>
+               href="?page={{ object_list.paginator.num_pages }}&search={{search}}&&search_by_csv={{search_by_csv}}">last &raquo;</a>
         {% endif %}
     </span>
     </div>

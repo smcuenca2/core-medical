@@ -7,9 +7,6 @@ from builtins import Exception
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.template import loader
 from modules.cnmb.models import Physic, Concentration, \
     PrescriptionLevel, RouteAdministration, GroupATC, CareLevel
 from modules.cnmb.utils.dto import CnmbDto
@@ -231,6 +228,7 @@ def process(request):
     object_list = []
 
     search = request.GET.get('search')
+    search_by_csv = request.GET.get('search_by_csv')
     selected_level = request.GET.get('selected-level')
 
     PAGINATOR_NUMBER_ITEMS = getattr(settings, "PAGINATOR_NUMBER_ITEMS",
@@ -251,6 +249,19 @@ def process(request):
                 group__parent__parent__parent__parent__code=search) | Q(
                 group__parent__parent__parent__parent__parent__code=search) | Q(
                 group__parent__parent__parent__parent__parent__code=search)).all()
+    elif search_by_csv is not None and search_by_csv == 'SI':
+        codes = read_codes()
+        list_by_csv = []
+        for code in codes:
+            list_by_csv = query_physics.filter(
+                Q(group__code=code) | Q(name__istartswith=code) | Q(
+                    group__parent__code=code) | Q(
+                    group__parent__parent__code=code) | Q(
+                    group__parent__parent__parent__code=code) | Q(
+                    group__parent__parent__parent__parent__code=code) | Q(
+                    group__parent__parent__parent__parent__parent__code=code) | Q(
+                    group__parent__parent__parent__parent__parent__code=code)).all()
+            physic_list.extend(list_by_csv)
     else:
         physic_list = query_physics.all()
 
@@ -265,4 +276,19 @@ def process(request):
     paginator = Paginator(cnmb_list, PAGINATOR_NUMBER_ITEMS)
     page = request.GET.get('page')
     object_list = paginator.get_page(page)
-    return {'object_list': object_list, 'search': search}
+    return {'object_list': object_list, 'search': search,
+            'search_by_csv': search_by_csv}
+
+
+def read_codes():
+    """
+    Este método permite almacenar los codigos de los medicamentos cnmb que estań en el archivo csv
+    :return:
+    """
+    codes_list = []
+    with open('codes_cnmb.csv', mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file, delimiter=';')
+
+        for row in csv_reader:
+            codes_list.append(row['code'])
+    return codes_list

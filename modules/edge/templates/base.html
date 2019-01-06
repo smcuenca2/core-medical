@@ -66,6 +66,7 @@
         {% include "index.html" %}
         {% block content %}
         {% if database_selected == "CNMB" %}
+        {% include "upload_codes_cnmb.html" %}
         {% include "index_cnmb.html" %}
         {% elif database_selected == "UMLS" %}
         {% include "upload_codes_umls.html" %}
