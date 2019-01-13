@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'modules.umls',
     'modules.cnmb',
     'modules.edge',
+    'modules.reports',
 
 ]
 

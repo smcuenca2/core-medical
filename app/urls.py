@@ -19,4 +19,5 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('core-medical/', include('modules.edge.urls')),
+    path('reports/', include('modules.reports.urls')),
 ]

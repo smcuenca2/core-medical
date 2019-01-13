@@ -63,8 +63,9 @@
     <div class="container">
         <h2 class="text-center text-uppercase text-secondary mb-0">Buscador</h2>
         <hr class="star-dark mb-5">
-        {% include "index.html" %}
+
         {% block content %}
+         {% include "index.html" %}
         {% if database_selected == "CNMB" %}
         {% include "upload_codes_cnmb.html" %}
         {% include "index_cnmb.html" %}

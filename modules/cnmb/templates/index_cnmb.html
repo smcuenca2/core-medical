@@ -4,11 +4,15 @@
         document.getElementById("button-process").addEventListener("click", function () {
             form.submit();
         });
-         var search_by_csv='{{search_by_csv}}';
-         console.log(search_by_csv,'mm');
-         if (search_by_csv!=undefined && search_by_csv=='SI') {
-             document.getElementById("search_by_csv").checked = true;
-         }
+        var formPrint = document.getElementById("form-print");
+        document.getElementById("button-print").addEventListener("click", function () {
+            formPrint.submit();
+        });
+        var search_by_csv = '{{search_by_csv}}';
+        console.log(search_by_csv, 'mm');
+        if (search_by_csv != undefined && search_by_csv == 'SI') {
+            document.getElementById("search_by_csv").checked = true;
+        }
     });
 
     function check() {
@@ -19,7 +23,14 @@
             document.getElementById("search_by_csv").value = 'NO';
         }
     }
+
 </script>
+<form id="form-print" target="_blank" method="get" action="/reports/cnmb">
+    <div class="form-group row">
+        <input id="button-print" on name="button-print" class="btn btn-info btn-lg col-sm-2" value="Imprimir"
+               type="button">
+    </div>
+</form>
 <form id="form-cnmb" method="get" action="process_cnmb">
     {% csrf_token %}
     <div class="form-group row">

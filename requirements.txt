@@ -3,3 +3,4 @@ PyMedTermino
 mysqlclient==1.3.13
 ipython
 django-extensions
+WeasyPrint

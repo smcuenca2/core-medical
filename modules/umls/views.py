@@ -104,8 +104,9 @@ def read_codes():
         csv_reader = csv.DictReader(csv_file, delimiter=';')
 
         for row in csv_reader:
-            data = DataCsv()
-            data.code = row['CUI'].upper()
-            data.name = row['NAME']
-            codes_list.append(data)
+            if 'CUI' in row and 'NAME' in row:
+                data = DataCsv()
+                data.code = row['CUI'].upper()
+                data.name = row['NAME']
+                codes_list.append(data)
     return codes_list

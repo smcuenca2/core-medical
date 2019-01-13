@@ -1,9 +1,10 @@
+import csv
+
 from django.shortcuts import render
 from modules.cnmb import views as views_cnmb
+from modules.cnmb.forms import FileUploadCnmbForm
 from modules.umls import views as views_umls
 from modules.umls.forms import FileUploadUmlsForm
-
-from modules.cnmb.forms import FileUploadCnmbForm
 
 
 def index(request):
@@ -76,6 +77,8 @@ def upload_csv_umls(request):
     else:
         form = FileUploadUmlsForm()
 
+    database_selected = 'UMLS'
+
     return render(request, 'upload_umls_successfull.html', locals())
 
 
@@ -93,6 +96,8 @@ def upload_csv_cnmb(request):
                 error = 'El formato del archivo que intenta subir es incorrecto.'
     else:
         form = FileUploadCnmbForm()
+
+    database_selected='CNMB'
 
     return render(request, 'upload_umls_successfull.html', locals())
 

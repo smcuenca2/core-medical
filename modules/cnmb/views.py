@@ -290,5 +290,6 @@ def read_codes():
         csv_reader = csv.DictReader(csv_file, delimiter=';')
 
         for row in csv_reader:
-            codes_list.append(row['code'])
+            if 'code' in row:
+                codes_list.append(row['code'])
     return codes_list
