@@ -65,8 +65,9 @@ def get_databases():
 def upload_csv_umls(request):
     if request.method == 'POST':
         form = FileUploadUmlsForm(request.POST, request.FILES)
-        error = None
         if form.is_valid():
+            is_valid=True
+            error = None
             file = request.FILES['file']
             index = file.name.find('.')
             format = file.name[index:]
@@ -74,6 +75,8 @@ def upload_csv_umls(request):
                 handle_uploaded_file(request.FILES['file'], 'codes_umls.csv')
             else:
                 error = 'El formato del archivo que intenta subir es incorrecto.'
+        else:
+            is_valid = False
     else:
         form = FileUploadUmlsForm()
 
@@ -87,6 +90,7 @@ def upload_csv_cnmb(request):
         form = FileUploadCnmbForm(request.POST, request.FILES)
         error = None
         if form.is_valid():
+            is_valid=True
             file = request.FILES['file']
             index = file.name.find('.')
             format = file.name[index:]
@@ -94,10 +98,12 @@ def upload_csv_cnmb(request):
                 handle_uploaded_file(request.FILES['file'], 'codes_cnmb.csv')
             else:
                 error = 'El formato del archivo que intenta subir es incorrecto.'
+        else:
+            is_valid = False
     else:
         form = FileUploadCnmbForm()
 
-    database_selected='CNMB'
+    database_selected = 'CNMB'
 
     return render(request, 'upload_umls_successfull.html', locals())
 

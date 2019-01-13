@@ -6,6 +6,7 @@ from django.template.loader import get_template
 from weasyprint import HTML
 
 from modules.cnmb.models import Physic
+from modules.cnmb.utils.dto import CnmbDto
 
 
 def report_search_cnmb(request):
@@ -13,6 +14,7 @@ def report_search_cnmb(request):
     physic_list = []
     codes = read_codes()
     list_by_csv = []
+    cnmb_list = []
     for code in codes:
         list_by_csv = query_physics.filter(
             Q(group__code=code) | Q(name__istartswith=code) | Q(
@@ -24,8 +26,16 @@ def report_search_cnmb(request):
                 group__parent__parent__parent__parent__parent__code=code)).all()
         physic_list.extend(list_by_csv)
 
+    for physic in physic_list:
+        cnmb_dto = CnmbDto()
+        cnmb_dto.physic = physic
+        cnmb_dto.care_level_one = physic.cares.filter(level='I').first()
+        cnmb_dto.care_level_second = physic.cares.filter(level='II').first()
+        cnmb_dto.care_level_third = physic.cares.filter(level='III').first()
+        cnmb_list.append(cnmb_dto)
+
     html_template = get_template('search_cnmb.html').render(
-        {'title': 'Ejemplo', 'list': list})
+        {'title': 'Reusltados de Búsuqeda', 'object_list':cnmb_list})
     pdf_file = HTML(string=html_template).write_pdf()
     http_response = HttpResponse(pdf_file, content_type='application/pdf')
     return http_response
