@@ -9,7 +9,6 @@
             formPrint.submit();
         });
         var search_by_csv = '{{search_by_csv}}';
-        console.log(search_by_csv, 'mm');
         if (search_by_csv != undefined && search_by_csv == 'SI') {
             document.getElementById("search_by_csv").checked = true;
         }
@@ -27,7 +26,7 @@
 </script>
 <form id="form-print" target="_blank" method="get" action="/reports/cnmb">
     <div class="form-group row">
-        <input id="button-print" on name="button-print" class="btn btn-info btn-lg" value="Descargar Resultados"
+        <input id="button-print" name="button-print" class="btn btn-info btn-lg" value="Descargar Resultados"
                type="button">
     </div>
 </form>
@@ -44,7 +43,7 @@
         <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
                placeholder="Buscar" value="{{search}}"
                required autofocus>
-        <a id="button-process" type="submit" class="btn btn-info btn-lg col-sm-2">Buscar</a>
+        <a id="button-process" type="submit" class="btn btn-info  btn-lg col-sm-2">Buscar</a>
     </div>
     <table class="table">
         <thead>

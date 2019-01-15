@@ -4,15 +4,40 @@
         document.getElementById("button-process").addEventListener("click", function () {
             form.submit();
         });
+        var formPrint = document.getElementById("form-print");
+        document.getElementById("button-print").addEventListener("click", function () {
+           formPrint.submit();
+        //     $.ajax({
+        //         url: '/reports/umls',
+        //         type: 'POST',
+        //         responseType: 'blob',
+        //         success: function (data) {
+        //             var blob = new Blob([data], {type: 'application/pdf'});
+        //            urlCreator=window.URL;
+        //             window.open(urlCreator.createObjectURL(blob))
+        //         }
+        //     });
+        });
     });
 
+        function change_relation() {
+            relation_selected = document.getElementById("relation-selected").value;
+            relation_selected_report = document.getElementById("relation-selected-report").value = relation_selected;
+
+        }
 </script>
-<div class="form-group row">
+<form id="form-print" method="GET"  target="_blank" action="/reports/umls">
+    <div class="form-group row">
+        <input id="button-print" name="button-print" class="btn btn-info btn-lg" value="Descargar Resultados"
+               type="submit">
+    </div>
+    <input id="relation-selected-report" type="hidden" name="relation-selected-report" value="may_be_treated_by">
+</form>
 <form id="form" method="get" action="process_umls">
     {% csrf_token %}
     <div class="form-group row">
         <label class="col-form-label col-sm-2">Seleccionar una Relación:</label>
-        <select id="relation-selected" name="relation-selected" class="form-control col-sm-10">
+        <select id="relation-selected" name="relation-selected" onclick="change_relation()" class="form-control col-sm-10">
             {% for rel in option_relations %}
             <option value="{{rel}}" {% if rel == relation_selected %} selected{% endif %}>{{rel}}</option>
             {% endfor %}
@@ -71,5 +96,5 @@
     </span>
     </div>
 </form>
-</div>
+
 
