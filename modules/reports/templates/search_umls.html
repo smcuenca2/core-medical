@@ -4,23 +4,27 @@
     <link rel="stylesheet" href="" {% static
     'css/report-style.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style> @page {
+    <style>
+        @page {
         size: letter landscape;
         margin: 2cm;
-        background: url('....') no-repeat;
-        background-size: cover;
-        margin: 0;@bottom-center {
+        @bottom-center {
             content: "Page " counter(page) " de " counter(pages);
         }
-    } </style>
+    },
+    .table td.fit,
+.table th.fit {
+    white-space: nowrap;
+    width: 10%;
+}
+    </style>
 </head>
-<body >
-<table style="font-size: 11px" class="table">
+<body>
+<table style="font-size: 10px" class="table">
     <thead>
     <th>Código</th>
     <th>Término Umls</th>
     <th>Término</th>
-<th>Relación</th>
     <th>Código de Relación</th>
     <th>Término de Relación</th>
     <th>Términologia</th>
@@ -30,8 +34,7 @@
         <td>{{ umls.code|upper }}</td>
         <td>{{ umls.term_umls|title }}</td>
         <td>{{ umls.term|title }}</td>
-      <td>{{ relation_selected|title }}</td>
-        <td>{{ umls.relation.code|upper }}</td>
+        <td>{{ umls.relation.code|title }}</td>
         <td>{{ umls.relation.term|title }}</td>
         <td>{{ umls.original_terminologies|upper }}</td>
     </tr>

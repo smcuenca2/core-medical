@@ -57,27 +57,27 @@ def report_search_umls(request):
         list_umls_cui.append(umls)
 
     codes_list = [data.code for data in data_csv_list]
-    relation_selected = request.GET.get('relation-selected-report')
     for umls_cui in list_umls_cui:
-        if relation_selected in umls_cui.umls.relations:
-            for relations in getattr(umls_cui.umls, relation_selected):
-                if relations.code.upper() in codes_list:
-                    concept = ConceptDTO()
-                    concept.relation = Relation()
-                    concept.code = umls_cui.umls.code
-                    concept.term = umls_cui.umls.term
-                    concept.original_terminologies = ' '.join(
-                        list(umls_cui.umls.original_terminologies))
-                    concept.relation.term = relations.term
-                    concept.terminology = umls_cui.umls.terminology.name
-                    concept.term_umls = umls_cui.term
-                    concept.relation.code = relations.code
-                    concepts.append(concept)
+        for el in ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
+            'may_treat', 'may_prevent', 'may_diagnose']:
+            if (el in umls_cui.umls.relations):
+                for relations in getattr(umls_cui.umls,el):
+                    if relations.code.upper() in codes_list:
+                        concept = ConceptDTO()
+                        concept.relation = Relation()
+                        concept.code = umls_cui.umls.code
+                        concept.term = umls_cui.umls.term
+                        concept.original_terminologies = ' '.join(
+                            list(umls_cui.umls.original_terminologies))
+                        concept.relation.term = relations.term
+                        concept.terminology = umls_cui.umls.terminology.name
+                        concept.term_umls = umls_cui.term
+                        concept.relation.code = el
+                        concepts.append(concept)
 
     html_template = get_template('search_umls.html')
     html = html_template.render(
-        {'title': 'Resultados de Búsqueda', 'object_list': concepts,
-         'relation_selected': relation_selected})
+        {'title': 'Resultados de Búsqueda', 'object_list': concepts})
     pdf_file = HTML(string=html).write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = 'filename="rol_pago.pdf"'
