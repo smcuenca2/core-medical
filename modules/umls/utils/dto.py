@@ -4,6 +4,7 @@ class Concept():
     terminology = None
     original_terminologies = None
     term_umls = None
+    relation_selected = None
 
     def __repr__(self):
         return str(self.__dict__)

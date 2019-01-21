@@ -2,8 +2,9 @@ import csv
 
 from django.conf import settings
 from django.core.paginator import Paginator
-from modules.umls.utils.dto import Relation, ConceptDTO, DataCsv, DataUmls
 from pymedtermino.umls import *
+
+from modules.umls.utils.dto import Relation, ConceptDTO, DataCsv, DataUmls
 
 
 def process(request):

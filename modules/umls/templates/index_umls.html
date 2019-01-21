@@ -5,39 +5,46 @@
             form.submit();
         });
         var formPrint = document.getElementById("form-print");
-        document.getElementById("button-print").addEventListener("click", function () {
-           formPrint.submit();
-        //     $.ajax({
-        //         url: '/reports/umls',
-        //         type: 'POST',
-        //         responseType: 'blob',
-        //         success: function (data) {
-        //             var blob = new Blob([data], {type: 'application/pdf'});
-        //            urlCreator=window.URL;
-        //             window.open(urlCreator.createObjectURL(blob))
-        //         }
-        //     });
+        document.getElementById("button-print-pdf").addEventListener("click", function () {
+            formPrint.submit();
+            //     $.ajax({
+            //         url: '/reports/umls',
+            //         type: 'POST',
+            //         responseType: 'blob',
+            //         success: function (data) {
+            //             var blob = new Blob([data], {type: 'application/pdf'});
+            //            urlCreator=window.URL;
+            //             window.open(urlCreator.createObjectURL(blob))
+            //         }
+            //     });
+        });
+        document.getElementById("button-print-txt").addEventListener("click", function () {
+            formPrint.submit();
         });
     });
 
-        function change_relation() {
-            relation_selected = document.getElementById("relation-selected").value;
-            relation_selected_report = document.getElementById("relation-selected-report").value = relation_selected;
+    function change_relation() {
+        relation_selected = document.getElementById("relation-selected").value;
+        relation_selected_report = document.getElementById("relation-selected-report").value = relation_selected;
 
-        }
+    }
 </script>
-<form id="form-print" method="GET"  target="_blank" action="/reports/umls">
+<form id="form-print" method="GET" target="_blank" action="/reports/umls">
     <div class="form-group row">
-        <input id="button-print" name="button-print" class="btn btn-info btn-lg" value="Descargar Resultados"
+
+        <input id="button-print-pdf" name="button-print-pdf" class="btn btn-info btn-sm" value="Descargar Resultados en pdf"
+               type="submit">
+        <input id="button-print-txt" name="button-print-txt" class="btn btn-primary btn-sm"
+               value="Descargar Resultados en txt"
                type="submit">
     </div>
-
 </form>
 <form id="form" method="get" action="process_umls">
     {% csrf_token %}
     <div class="form-group row">
         <label class="col-form-label col-sm-2">Seleccionar una Relación:</label>
-        <select id="relation-selected" name="relation-selected" onclick="change_relation()" class="form-control col-sm-10">
+        <select id="relation-selected" name="relation-selected" onclick="change_relation()"
+                class="form-control col-sm-10">
             {% for rel in option_relations %}
             <option value="{{rel}}" {% if rel == relation_selected %} selected{% endif %}>{{rel}}</option>
             {% endfor %}
@@ -65,7 +72,7 @@
         <tr>
             <td>{{ forloop.counter0|add:object_list.start_index }}</td>
             <td>{{ umls.code|upper }}</td>
-             <td>{{ umls.term_umls|title }}</td>
+            <td>{{ umls.term_umls|title }}</td>
             <td>{{ umls.term|title }}</td>
             <td>{{ relation_selected|title }}</td>
             <td>{{ umls.relation.code|upper }}</td>

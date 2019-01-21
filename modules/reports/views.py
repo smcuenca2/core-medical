@@ -2,6 +2,7 @@ import csv
 
 from django.db.models import Q
 from django.http import HttpResponse
+from django.template import Context, loader
 from django.template.loader import get_template
 from pymedtermino.umls import *
 from weasyprint import HTML
@@ -44,7 +45,7 @@ def report_search_cnmb(request):
     return http_response
 
 
-def report_search_umls(request):
+def generate_data_umls():
     data_csv_list = read_codes_umls()
     connect_to_umls()
     list_umls_cui = []
@@ -58,10 +59,11 @@ def report_search_umls(request):
 
     codes_list = [data.code for data in data_csv_list]
     for umls_cui in list_umls_cui:
-        for el in ['may_be_treated_by', 'may_be_prevented_by', 'may_be_diagnosed_by',
-            'may_treat', 'may_prevent', 'may_diagnose']:
+        for el in ['may_be_treated_by', 'may_be_prevented_by',
+                   'may_be_diagnosed_by',
+                   'may_treat', 'may_prevent', 'may_diagnose']:
             if (el in umls_cui.umls.relations):
-                for relations in getattr(umls_cui.umls,el):
+                for relations in getattr(umls_cui.umls, el):
                     if relations.code.upper() in codes_list:
                         concept = ConceptDTO()
                         concept.relation = Relation()
@@ -72,15 +74,28 @@ def report_search_umls(request):
                         concept.relation.term = relations.term
                         concept.terminology = umls_cui.umls.terminology.name
                         concept.term_umls = umls_cui.term
-                        concept.relation.code = el
+                        concept.relation_selected = el
+                        concept.relation.code = relations.code
                         concepts.append(concept)
+    return concepts
 
+
+def generate_report_umls(request):
+
+    if 'button-print-pdf' in request.GET.keys():
+        return report_umls_pdf(request)
+    else:
+        return report_umls_txt(request)
+
+
+def report_umls_pdf(request):
+    concepts = generate_data_umls()
     html_template = get_template('search_umls.html')
     html = html_template.render(
         {'title': 'Resultados de Búsqueda', 'object_list': concepts})
     pdf_file = HTML(string=html).write_pdf()
     response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="rol_pago.pdf"'
+    response['Content-Disposition'] = 'filename="results.pdf"'
 
     return response
 
@@ -104,16 +119,17 @@ def read_codes_umls():
     return codes_list
 
 
-def read_codes_cnmb():
-    """
-    Este método permite almacenar los codigos de los medicamentos cnmb que estań en el archivo csv
-    :return:
-    """
-    codes_list = []
-    with open('codes_cnmb.csv', mode='r') as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=';')
-
-        for row in csv_reader:
-            if 'code' in row:
-                codes_list.append(row['code'])
-    return codes_list
+def report_umls_txt(request):
+    concepts = generate_data_umls()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="results_umls.txt"'
+    writer = csv.writer(response)
+    writer.writerow(
+        ['Codigo', 'TerminoUml', 'Termino', 'Relacion', 'CodigoRelacion',
+         'TerminoRelacion', 'Terminologia'])
+    for concept in concepts:
+        writer.writerow(
+            [concept.code, concept.term_umls, concept.term,
+             concept.relation_selected, concept.relation.code,
+             concept.relation.term, concept.original_terminologies])
+    return response
