@@ -5,7 +5,7 @@
             form.submit();
         });
         var formPrint = document.getElementById("form-print");
-        document.getElementById("button-print").addEventListener("click", function () {
+        document.getElementById("button-print-pdf").addEventListener("click", function () {
             formPrint.submit();
         });
         var search_by_csv = '{{search_by_csv}}';
@@ -26,8 +26,10 @@
 </script>
 <form id="form-print" target="_blank" method="get" action="/reports/cnmb">
     <div class="form-group row">
-        <input id="button-print" name="button-print" class="btn btn-info btn-lg" value="Descargar Resultados"
-               type="button">
+        <input id="button-print-pdf" name="button-print-pdf" class="btn btn-info btn-md" value="Descargar Resultados en PDF"
+               type="submit">
+        <input id="button-print-pdf" name="button-print-txt" class="btn btn-primary btn-md" value="Descargar Resultados en Txt  "
+               type="submit">
     </div>
 </form>
 <form id="form-cnmb" method="get" action="process_cnmb">
@@ -43,7 +45,7 @@
         <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
                placeholder="Buscar" value="{{search}}"
                required autofocus>
-        <a id="button-process" type="submit" class="btn btn-info  btn-lg col-sm-2">Buscar</a>
+        <a id="button-process" type="submit" class="btn btn-info  btn-md col-sm-2">Buscar</a>
     </div>
     <table class="table">
         <thead>

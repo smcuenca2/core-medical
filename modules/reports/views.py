@@ -13,7 +13,7 @@ from modules.umls.utils.dto import ConceptDTO, DataUmls, DataCsv, Relation
 from modules.umls.views import connect_to_umls
 
 
-def report_search_cnmb(request):
+def generate_data_cnmb():
     query_physics = Physic.objects.using('cnmb').order_by('name')
     physic_list = []
     codes = read_codes_cnmb()
@@ -37,7 +37,19 @@ def report_search_cnmb(request):
         cnmb_dto.care_level_second = physic.cares.filter(level='II').first()
         cnmb_dto.care_level_third = physic.cares.filter(level='III').first()
         cnmb_list.append(cnmb_dto)
+    return cnmb_list
 
+
+def generate_report_cnmb(request):
+    print (request.GET)
+    if 'button-print-pdf' in request.GET.keys():
+        return report_cnmb_pdf(request)
+    else:
+        return report_cnmb_txt(request)
+
+
+def report_cnmb_pdf(request):
+    cnmb_list = generate_data_cnmb()
     html_template = get_template('search_cnmb.html').render(
         {'title': 'Resultados de Búsqueda', 'object_list': cnmb_list})
     pdf_file = HTML(string=html_template).write_pdf()
@@ -81,7 +93,6 @@ def generate_data_umls():
 
 
 def generate_report_umls(request):
-
     if 'button-print-pdf' in request.GET.keys():
         return report_umls_pdf(request)
     else:
@@ -119,6 +130,21 @@ def read_codes_umls():
     return codes_list
 
 
+def read_codes_cnmb():
+    """
+    Este método permite almacenar los codigos de los medicamentos cnmb que estań en el archivo csv
+    :return:
+    """
+    codes_list = []
+    with open('codes_cnmb.csv', mode='r') as csv_file:
+        csv_reader = csv.DictReader(csv_file, delimiter=';')
+
+        for row in csv_reader:
+            if 'code' in row:
+                codes_list.append(row['code'])
+    return codes_list
+
+
 def report_umls_txt(request):
     concepts = generate_data_umls()
     response = HttpResponse(content_type='text/csv')
@@ -132,4 +158,31 @@ def report_umls_txt(request):
             [concept.code, concept.term_umls, concept.term,
              concept.relation_selected, concept.relation.code,
              concept.relation.term, concept.original_terminologies])
+    return response
+
+
+def report_cnmb_txt(request):
+    cnmb_list = generate_data_cnmb()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="results_cnmb.txt"'
+    writer = csv.writer(response)
+    writer.writerow(
+        ['Codigo', 'Descripcion', 'FormaFarmaceutica', 'Concentracion',
+         'NivelPrescripcion',
+         'NivelAtencionI', 'NivelAtencionII', 'NivelAtencionIII', '2N',
+         'Descripcion2N', '1N', 'Descripcion1N'])
+    for cnmb in cnmb_list:
+        one_level = 'Si' if cnmb.care_level_one is not None else 'No'
+        sec_level = 'Si' if cnmb.care_level_second is not None else 'No'
+        third_level = 'Si' if cnmb.care_level_third is not None else 'No'
+        writer.writerow(
+            [cnmb.physic.group.code, cnmb.physic.name,
+             cnmb.physic.pharmaceuticalform,
+             '',
+             cnmb.physic.prescription_level.level,
+             one_level, sec_level, third_level,
+             cnmb.physic.group.parent.parent.parent.code,
+             cnmb.physic.group.parent.parent.parent.name,
+             cnmb.physic.group.parent.parent.parent.parent.code if cnmb.physic.group.parent.parent.parent.parent is not None else '',
+             cnmb.physic.group.parent.parent.parent.parent.name if cnmb.physic.group.parent.parent.parent.parent is not None else ''])
     return response
