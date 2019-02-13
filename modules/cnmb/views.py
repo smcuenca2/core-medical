@@ -240,16 +240,7 @@ def process(request):
     cnmb_list = []
     physic_list = []
 
-    if search is not None and search != "":
-        physic_list = query_physics.filter(
-            Q(group__code=search) | Q(name__istartswith=search) | Q(
-                group__parent__code=search) | Q(
-                group__parent__parent__code=search) | Q(
-                group__parent__parent__parent__code=search) | Q(
-                group__parent__parent__parent__parent__code=search) | Q(
-                group__parent__parent__parent__parent__parent__code=search) | Q(
-                group__parent__parent__parent__parent__parent__code=search)).all()
-    elif search_by_csv is not None and search_by_csv == 'SI':
+    if search_by_csv is not None and search_by_csv == 'SI':
         codes = read_codes()
         list_by_csv = []
         for code in codes:
@@ -262,6 +253,15 @@ def process(request):
                     group__parent__parent__parent__parent__parent__code=code) | Q(
                     group__parent__parent__parent__parent__parent__code=code)).all()
             physic_list.extend(list_by_csv)
+    elif search is not None and search != "":
+        physic_list = query_physics.filter(
+            Q(group__code=search) | Q(name__istartswith=search) | Q(
+                group__parent__code=search) | Q(
+                group__parent__parent__code=search) | Q(
+                group__parent__parent__parent__code=search) | Q(
+                group__parent__parent__parent__parent__code=search) | Q(
+                group__parent__parent__parent__parent__parent__code=search) | Q(
+                group__parent__parent__parent__parent__parent__code=search)).all()
     else:
         physic_list = query_physics.all()
 
@@ -291,5 +291,6 @@ def read_codes():
 
         for row in csv_reader:
             if 'code' in row:
-                codes_list.append(row['code'])
+                if row['code'] not in codes_list:
+                    codes_list.append(row['code'])
     return codes_list
