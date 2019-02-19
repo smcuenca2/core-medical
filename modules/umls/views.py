@@ -43,20 +43,18 @@ def process(request):
     codes_list = [data.code for data in data_csv_list]
 
     for umls_cui in list_umls_cui:
+        # Si busco por codigo ignoro la relación seleccionada.
+        if search is not None and search != "":
+            for rel in get_relations():
+                if rel in umls_cui.umls.relations:
+                    for relations in getattr(umls_cui.umls, rel):
+                        if relations.code.upper() in codes_list:
+                            buildUmls(concepts, umls_cui, relations)
+            continue
         if relation_selected in umls_cui.umls.relations:
             for relations in getattr(umls_cui.umls, relation_selected):
                 if relations.code.upper() in codes_list:
-                    concept = ConceptDTO()
-                    concept.relation = Relation()
-                    concept.code = umls_cui.umls.code
-                    concept.term = umls_cui.umls.term
-                    concept.original_terminologies = ' '.join(
-                        list(umls_cui.umls.original_terminologies))
-                    concept.relation.term = relations.term
-                    concept.terminology = umls_cui.umls.terminology.name
-                    concept.term_umls = umls_cui.term
-                    concept.relation.code = relations.code
-                    concepts.append(concept)
+                    buildUmls(concepts, umls_cui, relations)
 
     paginator = Paginator(concepts, PAGINATOR_NUMBER_ITEMS)
     page = request.GET.get('page')
@@ -64,6 +62,22 @@ def process(request):
 
     return {'object_list': object_list, 'relation_selected': relation_selected,
             'option_relations': option_relations, 'search': search}
+
+
+def buildUmls(concepts, umls_cui, relations):
+    codes_concept = [concept.code for concept in concepts]
+    if umls_cui.umls.code not in codes_concept:
+        concept = ConceptDTO()
+        concept.relation = Relation()
+        concept.code = umls_cui.umls.code
+        concept.term = umls_cui.umls.term
+        concept.original_terminologies = ' '.join(
+            list(umls_cui.umls.original_terminologies))
+        concept.relation.term = relations.term
+        concept.terminology = umls_cui.umls.terminology.name
+        concept.term_umls = umls_cui.term
+        concept.relation.code = relations.code
+        concepts.append(concept)
 
 
 def connect_to_umls():
