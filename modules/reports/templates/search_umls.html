@@ -1,0 +1,46 @@
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" href="" {% static
+    'css/report-style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        @page {
+        size: letter landscape;
+        margin-left: 2cm;
+        @bottom-center {
+            content: "Page " counter(page) " de " counter(pages);
+        }
+    },
+    .table td.fit,
+.table th.fit {
+    white-space: nowrap;
+    width: 10%;
+}
+    </style>
+</head>
+<body>
+<table style="font-size: 8px" class="table table-striped table-responsive-sm">
+    <thead>
+    <th>Código</th>
+    <th>Término Umls</th>
+    <th>Término</th>
+    <th>Relacion</th>
+    <th>Código de Relación</th>
+    <th>Término de Relación</th>
+    <th>Términologia</th>
+    </thead>
+    {% for umls in object_list %}
+    <tr>
+        <td>{{ umls.code|upper }}</td>
+        <td>{{ umls.term_umls|title }}</td>
+        <td>{{ umls.term|title }}</td>
+        <td>{{ umls.relation_selected|title }}</td>
+        <td>{{ umls.relation.code|title }}</td>
+        <td>{{ umls.relation.term|title }}</td>
+        <td>{{ umls.original_terminologies|upper }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

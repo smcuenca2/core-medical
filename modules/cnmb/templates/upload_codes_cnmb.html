@@ -1,0 +1,8 @@
+<form action="upload_csv_cnmb" method="post" id="file-upload-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group row">
+        <button type="submit" class="btn btn-primary btn-sm col-sm-4" id='upload-btn'>Subir Archivo CSV</button>
+        <input type="file" style="color: white" class="form-control-file  col-sm-8" name="file" id="file">
+    </div>
+</form>
+

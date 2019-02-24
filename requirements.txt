@@ -2,3 +2,5 @@ Django==2.1.2
 PyMedTermino
 mysqlclient==1.3.13
 ipython
+django-extensions
+WeasyPrint

@@ -1,0 +1,120 @@
+<script>
+    $(document).ready(function () {
+        var form = document.getElementById("form-cnmb");
+        document.getElementById("button-process").addEventListener("click", function () {
+            form.submit();
+        });
+        var formPrint = document.getElementById("form-print");
+        document.getElementById("button-print-pdf").addEventListener("click", function () {
+            formPrint.submit();
+        });
+        var search_by_csv = '{{search_by_csv}}';
+        if (search_by_csv != undefined && search_by_csv == 'SI') {
+            document.getElementById("search_by_csv").checked = true;
+        }
+    });
+
+    function check() {
+        var x = document.getElementById("search_by_csv").checked;
+        if (x == true) {
+            document.getElementById("search_by_csv").value = 'SI';
+        } else {
+            document.getElementById("search_by_csv").value = 'NO';
+        }
+    }
+
+</script>
+<form id="form-print" target="_blank" method="get" action="/reports/cnmb">
+    <div class="form-group row">
+        <input id="button-print-pdf" name="button-print-pdf" class="btn btn-info btn-md" value="Descargar Resultados en PDF"
+               type="submit">
+        <input id="button-print-pdf" name="button-print-txt" class="btn btn-primary btn-md" value="Descargar Resultados en Txt  "
+               type="submit">
+    </div>
+</form>
+<form id="form-cnmb" method="get" action="process_cnmb">
+    {% csrf_token %}
+    <div class="form-group row">
+
+        <label class="col-sm-8">Buscar por Archivo CSV:</label>
+        <input class="form-control col-sm-4" type="checkbox" onclick="check()" name="search_by_csv" id="search_by_csv"
+               value="{{search_by_csv}}">
+    </div>
+
+    <div class="form-group row">
+        <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
+               placeholder="Buscar" value="{{search}}"
+               required autofocus>
+        <a id="button-process" type="submit" class="btn btn-info  btn-md col-sm-2">Buscar</a>
+    </div>
+    <table class="table">
+        <thead>
+        <th>Nro.</th>
+        <th>Código</th>
+        <th>Descripción</th>
+        <th>Forma Farmacéutica</th>
+        <th>Concentración</th>
+        <th>Nivel de Prescripción</th>
+        <th>Nivel de Atención I</th>
+        <th>Nivel de Atención II</th>
+        <th>Nivel de Atención III</th>
+        <th>2N</th>
+        <th>Descripción 2N</th>
+        <th>1N</th>
+        <th>Descripción 1N</th>
+        </thead>
+        {% for cnmb in object_list %}
+        <tr>
+            <td>{{ forloop.counter0|add:object_list.start_index }}</td>
+            <td>{{ cnmb.physic.group.code|upper }}</td>
+            <td>{{ cnmb.physic.name|upper }}</td>
+            <td>{{ cnmb.physic.pharmaceuticalform|title }}</td>
+            <td>{{ cnmb.physic.concentration.name|title }}</td>
+            <td>{{ cnmb.physic.prescription_level.level|title }}</td>
+            {% if cnmb.care_level_one is not None %}
+            <td>Si</td>
+            {% else %}
+            <td>{{ 'No'|title }}</td>
+            {% endif %}
+
+            {% if cnmb.care_level_second is not None %}
+            <td>SI</td>
+            {% else %}
+            <td>{{ 'No'|title }}</td>
+            {% endif %}
+
+            {% if cnmb.care_level_third is not None %}
+            <td>SI</td>
+            {% else %}
+            <td>{{ 'No'|title }}</td>
+            {% endif %}
+
+            <td>{{ cnmb.physic.group.parent.parent.parent.code|upper }}</td>
+            <td>{{ cnmb.physic.group.parent.parent.parent.name|title }}</td>
+            <td>{{ cnmb.physic.group.parent.parent.parent.parent.code|upper }}</td>
+            <td>{{ cnmb.physic.group.parent.parent.parent.parent.name|title }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a class="page-item"
+               href="?page=1&search={{search}}&&search_by_csv={{search_by_csv}}">&laquo; first</a>
+            <a class="page-item"
+               href="?page={{ object_list.previous_page_number }}&search={{search}}&&search_by_csv={{search_by_csv}}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a class="page-item"
+               href="?page={{ object_list.next_page_number }}&search={{search}}&&search_by_csv={{search_by_csv}}">next</a>
+            <a class="page-item"
+               href="?page={{ object_list.paginator.num_pages }}&search={{search}}&&search_by_csv={{search_by_csv}}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+</form>

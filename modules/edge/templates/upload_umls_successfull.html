@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if is_valid is True%}
+<div>
+{%if error%}
+<h1>{{error}}</h1>
+{%else%}
+<h1>Archivo cargado exitosamente.</h1>
+{%endif%}
+</div>
+{% else %}
+<h1>No ha seleccionado nungún archivo</h1>
+{%endif%}
+<a href="/core-medical/process?database-selected={{database_selected}}">Continuar con búsqueda</a>
+{% endblock %}

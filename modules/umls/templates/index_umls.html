@@ -1,0 +1,107 @@
+<script>
+    $(document).ready(function () {
+        var form = document.getElementById("form");
+        document.getElementById("button-process").addEventListener("click", function () {
+            form.submit();
+        });
+        var formPrint = document.getElementById("form-print");
+        document.getElementById("button-print-pdf").addEventListener("click", function () {
+            formPrint.submit();
+            //     $.ajax({
+            //         url: '/reports/umls',
+            //         type: 'POST',
+            //         responseType: 'blob',
+            //         success: function (data) {
+            //             var blob = new Blob([data], {type: 'application/pdf'});
+            //            urlCreator=window.URL;
+            //             window.open(urlCreator.createObjectURL(blob))
+            //         }
+            //     });
+        });
+        document.getElementById("button-print-txt").addEventListener("click", function () {
+            formPrint.submit();
+        });
+    });
+
+    function change_relation() {
+        relation_selected = document.getElementById("relation-selected").value;
+        relation_selected_report = document.getElementById("relation-selected-report").value = relation_selected;
+
+    }
+</script>
+<form id="form-print" method="GET" target="_blank" action="/reports/umls">
+    <div class="form-group row">
+
+        <input id="button-print-pdf" name="button-print-pdf" class="btn btn-info btn-sm" value="Descargar Resultados en pdf"
+               type="submit">
+        <input id="button-print-txt" name="button-print-txt" class="btn btn-primary btn-sm"
+               value="Descargar Resultados en txt"
+               type="submit">
+    </div>
+</form>
+<form id="form" method="get" action="process_umls">
+    {% csrf_token %}
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2">Seleccionar una Relación:</label>
+        <select id="relation-selected" name="relation-selected" onclick="change_relation()"
+                class="form-control col-sm-10">
+            {% for rel in option_relations %}
+            <option value="{{rel}}" {% if rel == relation_selected %} selected{% endif %}>{{rel}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group row">
+        <input style="height: 3em" type="text" id="search" class="form-control col-sm-10" name="search"
+               placeholder="Buscar" value="{{search}}"
+               required autofocus>
+        <a id="button-process" type="submit" class="btn btn-lg btn-primary col-sm-2">Buscar</a>
+    </div>
+    <table class="table">
+        <thead>
+        <th>Nro.</th>
+        <th>Código</th>
+        <th>Término Umls</th>
+        <th>Término</th>
+        <th>Relación</th>
+        <th>Código de Relación</th>
+        <th>Término de Relación</th>
+        <th>Términologia</th>
+        </thead>
+        {% for umls in object_list %}
+        <tr>
+            <td>{{ forloop.counter0|add:object_list.start_index }}</td>
+            <td>{{ umls.code|upper }}</td>
+            <td>{{ umls.term_umls|title }}</td>
+            <td>{{ umls.term|title }}</td>
+            <td>{{ relation_selected|title }}</td>
+            <td>{{ umls.relation.code|upper }}</td>
+            <td>{{ umls.relation.term|title }}</td>
+            <td>{{ umls.original_terminologies|upper }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a class="page-item"
+               href="?page=1&search={{search}}&relation-selected={{relation_selected}}">&laquo; first</a>
+            <a class="page-item"
+               href="?page={{ object_list.previous_page_number }}&search={{search}}&relation-selected={{relation_selected}}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+        </span>
+
+        {% if object_list.has_next %}
+            <a class="page-item"
+               href="?page={{ object_list.next_page_number }}&search={{search}}&relation-selected={{relation_selected}}">next</a>
+            <a class="page-item"
+               href="?page={{ object_list.paginator.num_pages }}&search={{search}}&relation-selected={{relation_selected}}">last &raquo;</a>
+        {% endif %}
+    </span>
+    </div>
+</form>
+
+
