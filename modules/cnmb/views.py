@@ -241,6 +241,8 @@ def process(request):
     physic_list = []
 
     if search_by_csv is not None and search_by_csv == 'SI':
+        """Este bloque de codigo es para buscar los elementos cuando el usuario
+        seleccion que desea buscar desde un archivo."""
         codes = read_codes()
         list_by_csv = []
         for code in codes:
@@ -252,7 +254,16 @@ def process(request):
                     group__parent__parent__parent__parent__code=code) | Q(
                     group__parent__parent__parent__parent__parent__code=code) | Q(
                     group__parent__parent__parent__parent__parent__code=code)).all()
+
             physic_list.extend(list_by_csv)
+
+        if search != "":
+            physic_list_copy = physic_list.copy()
+            physic_list = []
+            for physic in physic_list_copy:
+                if physic.code.startswith(search):
+                    physic_list.append(physic)
+
     elif search is not None and search != "":
         physic_list = query_physics.filter(
             Q(group__code=search) | Q(name__istartswith=search) | Q(
